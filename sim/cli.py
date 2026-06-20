@@ -203,12 +203,35 @@ def cases(live: bool = typer.Option(False, "--live", hidden=True)) -> None:
     store.close()
 
 
+_LOOPBACK_HOSTS = {"127.0.0.1", "localhost", "::1"}
+
+
 @app.command()
 def serve(
-    host: str = typer.Option("127.0.0.1", help="Bind host."),
+    host: str = typer.Option("127.0.0.1", help="Bind host (loopback only unless --allow-remote)."),
     port: int = typer.Option(8000, help="Bind port."),
+    allow_remote: bool = typer.Option(
+        False, "--allow-remote", help="Permit binding to a non-loopback host (see warning)."
+    ),
 ) -> None:
-    """Launch the FastAPI loan-officer desk (requires the `web` extra)."""
+    """Launch the FastAPI loan-officer desk (requires the `web` extra).
+
+    The desk is an unauthenticated *local demo* aid and is not part of the deployable
+    agent (production human gates run through authenticated UiPath Action Center). It
+    refuses to bind to a non-loopback host unless ``--allow-remote`` is passed.
+    """
+    if host not in _LOOPBACK_HOSTS and not allow_remote:
+        console.print(
+            f"[red]Refusing to bind the unauthenticated demo UI to non-loopback host "
+            f"'{host}'.[/]\nUse the default 127.0.0.1, or pass --allow-remote only on a "
+            f"trusted, access-controlled network."
+        )
+        raise typer.Exit(2)
+    if host not in _LOOPBACK_HOSTS:
+        console.print(
+            "[yellow]⚠ Serving the unauthenticated demo UI on a non-loopback host. "
+            "Anyone who can reach it can act on cases. Use only on a trusted network.[/]"
+        )
     try:
         import uvicorn
 
