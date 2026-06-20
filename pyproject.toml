@@ -1,0 +1,79 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mortgage-underwriting-agents"
+version = "0.1.0"
+description = "Agentic mortgage underwriting case for UiPath Maestro Case, built as UiPath Coded Agents with LangGraph."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Sebastien Henry", email = "henry.sebastien1982@gmail.com" }]
+keywords = ["uipath", "maestro", "agents", "langgraph", "underwriting"]
+dependencies = [
+    "langgraph>=0.2.50",
+    "langgraph-checkpoint-sqlite>=2.0",
+    "langchain-core>=0.3.0",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "pyyaml>=6.0",
+    "typer>=0.12",
+]
+
+[project.optional-dependencies]
+# Cloud port: real UiPath Coded Agent SDK (needed for `uipath init/pack/publish` and UiPathAdapter).
+cloud = ["uipath>=2.0.0", "uipath-langchain>=0.0.100"]
+# Bonus: external framework (CrewAI sub-crew) showcased inside the governed UiPath layer.
+crew = ["crewai>=0.70"]
+# Optional demo web UI (loan-officer desk).
+web = ["fastapi>=0.110", "uvicorn>=0.29", "jinja2>=3.1", "python-multipart>=0.0.9"]
+# Live LLM for the demo (deterministic stub is the default).
+live = ["langchain-anthropic>=0.2", "anthropic>=0.40"]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.6",
+    "mypy>=1.11",
+    "types-pyyaml>=6.0",
+]
+
+[project.scripts]
+mua-sim = "sim.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mortgage_agents", "sim"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "sim", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "W"]
+# UP042: we deliberately use the `str, Enum` mixin (not StrEnum) for stable
+# `.value`-based JSON/msgpack serialization across the local/cloud boundary.
+ignore = ["E501", "UP042"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+warn_unused_ignores = false
+no_implicit_optional = true
+
+# LangGraph 1.x's heavily-overloaded StateGraph.add_node does not resolve cleanly under
+# mypy against a `total=False` TypedDict state with dict-returning node callables. This is
+# a third-party typing-stub limitation, not a real defect (the graph runs and is tested),
+# so we relax those two codes for the orchestrator only — every other module stays strict.
+[[tool.mypy.overrides]]
+module = ["mortgage_agents.graphs.case_orchestrator"]
+disable_error_code = ["call-overload", "arg-type"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "."]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.coverage.run]
+source = ["src/mortgage_agents"]
+omit = ["*/ports/uipath_adapter.py"]
