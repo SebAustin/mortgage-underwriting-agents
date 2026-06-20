@@ -1,0 +1,6 @@
+{
+  "ProjectType": "Agent",
+  "Name": "mortgage-underwriting-agents",
+  "Description": "Agentic mortgage underwriting case for UiPath Maestro Case, built as UiPath Coded Agents with LangGraph.",
+  "MainFile": null
+}

@@ -77,7 +77,9 @@ def run_auto(
             Command(resume={"choice": choice, "note": f"auto:{persona.name}"}), cfg
         )
         safety += 1
-    return out, port
+    # Return the full internal state (richer than the agent's output contract) for inspection.
+    final_state: CaseState = graph.get_state(cfg).values
+    return final_state, port
 
 
 def _advance_and_record(graph, cfg, out: dict, store: InboxStore, case_id: str, persona: str,

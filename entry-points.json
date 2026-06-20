@@ -1,0 +1,682 @@
+{
+    "$schema": "https://cloud.uipath.com/draft/2024-12/entry-point",
+    "$id": "entry-points.json",
+    "entryPoints": [
+        {
+            "filePath": "mortgage-case",
+            "uniqueId": "b6d5741a-0f2f-4a1e-8e5c-a5c289d8696b",
+            "type": "agent",
+            "input": {
+                "type": "object",
+                "properties": {
+                    "application": {
+                        "properties": {
+                            "case_id": {
+                                "title": "Case Id",
+                                "type": "string"
+                            },
+                            "applicant": {
+                                "properties": {
+                                    "full_name": {
+                                        "title": "Full Name",
+                                        "type": "string"
+                                    },
+                                    "ssn_last4": {
+                                        "title": "Ssn Last4",
+                                        "type": "string"
+                                    },
+                                    "employment_type": {
+                                        "enum": [
+                                            "w2",
+                                            "self_employed"
+                                        ],
+                                        "title": "EmploymentType",
+                                        "type": "string"
+                                    },
+                                    "employer": {
+                                        "type": "string"
+                                    },
+                                    "stated_annual_income": {
+                                        "title": "Stated Annual Income",
+                                        "type": "number"
+                                    },
+                                    "monthly_debts": {
+                                        "default": 0.0,
+                                        "title": "Monthly Debts",
+                                        "type": "number"
+                                    },
+                                    "email": {
+                                        "default": "borrower@example.com",
+                                        "title": "Email",
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "full_name",
+                                    "ssn_last4",
+                                    "employment_type",
+                                    "stated_annual_income"
+                                ],
+                                "title": "Applicant",
+                                "type": "object"
+                            },
+                            "loan": {
+                                "properties": {
+                                    "loan_program": {
+                                        "default": "conventional_30yr",
+                                        "title": "Loan Program",
+                                        "type": "string"
+                                    },
+                                    "purchase_price": {
+                                        "title": "Purchase Price",
+                                        "type": "number"
+                                    },
+                                    "loan_amount": {
+                                        "title": "Loan Amount",
+                                        "type": "number"
+                                    },
+                                    "appraised_value": {
+                                        "type": "number"
+                                    },
+                                    "interest_rate": {
+                                        "default": 0.07,
+                                        "title": "Interest Rate",
+                                        "type": "number"
+                                    },
+                                    "term_months": {
+                                        "default": 360,
+                                        "title": "Term Months",
+                                        "type": "integer"
+                                    },
+                                    "occupancy": {
+                                        "default": "primary",
+                                        "title": "Occupancy",
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "purchase_price",
+                                    "loan_amount"
+                                ],
+                                "title": "LoanRequest",
+                                "type": "object"
+                            },
+                            "documents": {
+                                "items": {
+                                    "properties": {
+                                        "doc_type": {
+                                            "enum": [
+                                                "pay_stub",
+                                                "w2",
+                                                "bank_statement",
+                                                "tax_return",
+                                                "appraisal",
+                                                "id",
+                                                "unknown"
+                                            ],
+                                            "title": "DocType",
+                                            "type": "string"
+                                        },
+                                        "filename": {
+                                            "title": "Filename",
+                                            "type": "string"
+                                        },
+                                        "payload": {
+                                            "additionalProperties": true,
+                                            "title": "Payload",
+                                            "type": "object"
+                                        },
+                                        "extraction_confidence": {
+                                            "default": 0.99,
+                                            "title": "Extraction Confidence",
+                                            "type": "number"
+                                        }
+                                    },
+                                    "required": [
+                                        "doc_type",
+                                        "filename"
+                                    ],
+                                    "title": "Document",
+                                    "type": "object"
+                                },
+                                "title": "Documents",
+                                "type": "array"
+                            }
+                        },
+                        "required": [
+                            "case_id",
+                            "applicant",
+                            "loan"
+                        ],
+                        "title": "LoanApplication",
+                        "type": "object"
+                    }
+                },
+                "required": [
+                    "application"
+                ]
+            },
+            "output": {
+                "type": "object",
+                "properties": {
+                    "terminal_decision": {
+                        "enum": [
+                            "approve",
+                            "conditional_approve",
+                            "decline",
+                            "escalated",
+                            "info_requested",
+                            "pending"
+                        ],
+                        "title": "Decision",
+                        "type": "string"
+                    },
+                    "recommendation": {
+                        "properties": {
+                            "decision": {
+                                "enum": [
+                                    "approve",
+                                    "conditional_approve",
+                                    "decline",
+                                    "escalated",
+                                    "info_requested",
+                                    "pending"
+                                ],
+                                "title": "Decision",
+                                "type": "string"
+                            },
+                            "confidence": {
+                                "title": "Confidence",
+                                "type": "number"
+                            },
+                            "rationale": {
+                                "title": "Rationale",
+                                "type": "string"
+                            },
+                            "conditions": {
+                                "items": {
+                                    "properties": {
+                                        "code": {
+                                            "title": "Code",
+                                            "type": "string"
+                                        },
+                                        "description": {
+                                            "title": "Description",
+                                            "type": "string"
+                                        },
+                                        "cleared": {
+                                            "default": false,
+                                            "title": "Cleared",
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "code",
+                                        "description"
+                                    ],
+                                    "title": "Condition",
+                                    "type": "object"
+                                },
+                                "title": "Conditions",
+                                "type": "array"
+                            },
+                            "policy_citations": {
+                                "items": {
+                                    "type": "string"
+                                },
+                                "title": "Policy Citations",
+                                "type": "array"
+                            },
+                            "borderline": {
+                                "default": false,
+                                "title": "Borderline",
+                                "type": "boolean"
+                            },
+                            "compensating_factors": {
+                                "items": {
+                                    "type": "string"
+                                },
+                                "title": "Compensating Factors",
+                                "type": "array"
+                            }
+                        },
+                        "required": [
+                            "decision",
+                            "confidence",
+                            "rationale"
+                        ],
+                        "title": "Recommendation",
+                        "type": "object"
+                    },
+                    "metrics": {
+                        "properties": {
+                            "dti": {
+                                "title": "Dti",
+                                "type": "number"
+                            },
+                            "front_end_dti": {
+                                "title": "Front End Dti",
+                                "type": "number"
+                            },
+                            "ltv": {
+                                "title": "Ltv",
+                                "type": "number"
+                            },
+                            "dscr": {
+                                "anyOf": [
+                                    {
+                                        "type": "number"
+                                    },
+                                    {
+                                        "type": "null"
+                                    }
+                                ],
+                                "default": null,
+                                "title": "Dscr"
+                            }
+                        },
+                        "required": [
+                            "dti",
+                            "front_end_dti",
+                            "ltv"
+                        ],
+                        "title": "Metrics",
+                        "type": "object"
+                    },
+                    "conditions": {
+                        "items": {
+                            "properties": {
+                                "code": {
+                                    "title": "Code",
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "title": "Description",
+                                    "type": "string"
+                                },
+                                "cleared": {
+                                    "default": false,
+                                    "title": "Cleared",
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "code",
+                                "description"
+                            ],
+                            "title": "Condition",
+                            "type": "object"
+                        },
+                        "title": "Conditions",
+                        "type": "array"
+                    },
+                    "exceptions": {
+                        "items": {
+                            "properties": {
+                                "type": {
+                                    "enum": [
+                                        "missing_docs",
+                                        "low_confidence",
+                                        "dti_exceeded",
+                                        "fraud_aml",
+                                        "appraisal_gap",
+                                        "conflicting_data",
+                                        "transient_failure"
+                                    ],
+                                    "title": "ExceptionType",
+                                    "type": "string"
+                                },
+                                "severity": {
+                                    "enum": [
+                                        "low",
+                                        "medium",
+                                        "high",
+                                        "critical"
+                                    ],
+                                    "title": "Severity",
+                                    "type": "string"
+                                },
+                                "detail": {
+                                    "title": "Detail",
+                                    "type": "string"
+                                },
+                                "route": {
+                                    "title": "Route",
+                                    "type": "string"
+                                },
+                                "stage": {
+                                    "description": "The Maestro case stages, in order.",
+                                    "enum": [
+                                        "intake",
+                                        "doc_verification",
+                                        "income_analysis",
+                                        "adjudication",
+                                        "conditions",
+                                        "decision",
+                                        "closed"
+                                    ],
+                                    "title": "Stage",
+                                    "type": "string"
+                                },
+                                "resolved": {
+                                    "default": false,
+                                    "title": "Resolved",
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "type",
+                                "severity",
+                                "detail",
+                                "route",
+                                "stage"
+                            ],
+                            "title": "ExceptionEvent",
+                            "type": "object"
+                        },
+                        "title": "Exceptions",
+                        "type": "array"
+                    },
+                    "human_decisions": {
+                        "items": {
+                            "properties": {
+                                "gate": {
+                                    "title": "Gate",
+                                    "type": "string"
+                                },
+                                "choice": {
+                                    "title": "Choice",
+                                    "type": "string"
+                                },
+                                "note": {
+                                    "default": "",
+                                    "title": "Note",
+                                    "type": "string"
+                                },
+                                "decided_by": {
+                                    "default": "loan_officer",
+                                    "title": "Decided By",
+                                    "type": "string"
+                                },
+                                "decided_at": {
+                                    "default": "",
+                                    "title": "Decided At",
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "gate",
+                                "choice"
+                            ],
+                            "title": "HumanDecision",
+                            "type": "object"
+                        },
+                        "title": "Human Decisions",
+                        "type": "array"
+                    },
+                    "timeline": {
+                        "items": {
+                            "properties": {
+                                "ts": {
+                                    "title": "Ts",
+                                    "type": "string"
+                                },
+                                "stage": {
+                                    "description": "The Maestro case stages, in order.",
+                                    "enum": [
+                                        "intake",
+                                        "doc_verification",
+                                        "income_analysis",
+                                        "adjudication",
+                                        "conditions",
+                                        "decision",
+                                        "closed"
+                                    ],
+                                    "title": "Stage",
+                                    "type": "string"
+                                },
+                                "actor": {
+                                    "enum": [
+                                        "robot",
+                                        "agent",
+                                        "human",
+                                        "system"
+                                    ],
+                                    "title": "Actor",
+                                    "type": "string"
+                                },
+                                "action": {
+                                    "title": "Action",
+                                    "type": "string"
+                                },
+                                "detail": {
+                                    "default": "",
+                                    "title": "Detail",
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "ts",
+                                "stage",
+                                "actor",
+                                "action"
+                            ],
+                            "title": "TimelineEntry",
+                            "type": "object"
+                        },
+                        "title": "Timeline",
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "terminal_decision",
+                    "recommendation",
+                    "metrics",
+                    "conditions",
+                    "exceptions",
+                    "human_decisions",
+                    "timeline"
+                ]
+            },
+            "graph": {
+                "nodes": [
+                    {
+                        "id": "__start__",
+                        "name": "__start__",
+                        "type": "__start__",
+                        "subgraph": null,
+                        "metadata": {}
+                    },
+                    {
+                        "id": "intake",
+                        "name": "intake",
+                        "type": "node",
+                        "subgraph": null,
+                        "metadata": {}
+                    },
+                    {
+                        "id": "doc_verify",
+                        "name": "doc_verify",
+                        "type": "node",
+                        "subgraph": null,
+                        "metadata": {}
+                    },
+                    {
+                        "id": "redigitize",
+                        "name": "redigitize",
+                        "type": "node",
+                        "subgraph": null,
+                        "metadata": {}
+                    },
+                    {
+                        "id": "verify_gate",
+                        "name": "verify_gate",
+                        "type": "node",
+                        "subgraph": null,
+                        "metadata": {}
+                    },
+                    {
+                        "id": "income_analysis",
+                        "name": "income_analysis",
+                        "type": "node",
+                        "subgraph": null,
+                        "metadata": {}
+                    },
+                    {
+                        "id": "adjudication",
+                        "name": "adjudication",
+                        "type": "node",
+                        "subgraph": null,
+                        "metadata": {}
+                    },
+                    {
+                        "id": "gate_a",
+                        "name": "gate_a",
+                        "type": "node",
+                        "subgraph": null,
+                        "metadata": {}
+                    },
+                    {
+                        "id": "conditions",
+                        "name": "conditions",
+                        "type": "node",
+                        "subgraph": null,
+                        "metadata": {}
+                    },
+                    {
+                        "id": "gate_b",
+                        "name": "gate_b",
+                        "type": "node",
+                        "subgraph": null,
+                        "metadata": {}
+                    },
+                    {
+                        "id": "closing",
+                        "name": "closing",
+                        "type": "node",
+                        "subgraph": null,
+                        "metadata": {}
+                    },
+                    {
+                        "id": "request_info",
+                        "name": "request_info",
+                        "type": "node",
+                        "subgraph": null,
+                        "metadata": {}
+                    },
+                    {
+                        "id": "escalate",
+                        "name": "escalate",
+                        "type": "node",
+                        "subgraph": null,
+                        "metadata": {}
+                    },
+                    {
+                        "id": "__end__",
+                        "name": "__end__",
+                        "type": "__end__",
+                        "subgraph": null,
+                        "metadata": {}
+                    }
+                ],
+                "edges": [
+                    {
+                        "source": "__start__",
+                        "target": "intake",
+                        "label": null
+                    },
+                    {
+                        "source": "adjudication",
+                        "target": "conditions",
+                        "label": null
+                    },
+                    {
+                        "source": "adjudication",
+                        "target": "escalate",
+                        "label": null
+                    },
+                    {
+                        "source": "adjudication",
+                        "target": "gate_a",
+                        "label": null
+                    },
+                    {
+                        "source": "conditions",
+                        "target": "escalate",
+                        "label": null
+                    },
+                    {
+                        "source": "conditions",
+                        "target": "gate_b",
+                        "label": null
+                    },
+                    {
+                        "source": "doc_verify",
+                        "target": "income_analysis",
+                        "label": null
+                    },
+                    {
+                        "source": "doc_verify",
+                        "target": "redigitize",
+                        "label": null
+                    },
+                    {
+                        "source": "doc_verify",
+                        "target": "verify_gate",
+                        "label": null
+                    },
+                    {
+                        "source": "gate_a",
+                        "target": "conditions",
+                        "label": null
+                    },
+                    {
+                        "source": "gate_b",
+                        "target": "closing",
+                        "label": null
+                    },
+                    {
+                        "source": "income_analysis",
+                        "target": "adjudication",
+                        "label": null
+                    },
+                    {
+                        "source": "intake",
+                        "target": "doc_verify",
+                        "label": null
+                    },
+                    {
+                        "source": "intake",
+                        "target": "request_info",
+                        "label": null
+                    },
+                    {
+                        "source": "redigitize",
+                        "target": "doc_verify",
+                        "label": null
+                    },
+                    {
+                        "source": "verify_gate",
+                        "target": "income_analysis",
+                        "label": null
+                    },
+                    {
+                        "source": "closing",
+                        "target": "__end__",
+                        "label": null
+                    },
+                    {
+                        "source": "escalate",
+                        "target": "__end__",
+                        "label": null
+                    },
+                    {
+                        "source": "request_info",
+                        "target": "__end__",
+                        "label": null
+                    }
+                ]
+            }
+        }
+    ]
+}

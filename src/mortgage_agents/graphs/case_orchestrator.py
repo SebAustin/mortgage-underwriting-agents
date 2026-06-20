@@ -10,10 +10,24 @@ from __future__ import annotations
 
 from langgraph.graph import END, START, StateGraph
 
-from ..llm import LLMProvider, get_llm
-from ..ports import PlatformPort
-from ..state import (
+# NOTE: absolute imports (not relative) so this entry module loads both as a normal package
+# module AND when the UiPath graph loader imports it by file path (no package context).
+from mortgage_agents.graphs._helpers import timeline_entry
+from mortgage_agents.graphs.adjudication_agent import make_adjudication_agent
+from mortgage_agents.graphs.doc_verify_agent import (
+    CONFIDENCE_THRESHOLD,
+    make_doc_verify_agent,
+    make_redigitize_node,
+)
+from mortgage_agents.graphs.exception_agent import make_exception_agent
+from mortgage_agents.graphs.intake_agent import make_intake_agent
+from mortgage_agents.graphs.underwriting_agent import make_underwriting_agent
+from mortgage_agents.llm import LLMProvider, get_llm
+from mortgage_agents.ports import PlatformPort
+from mortgage_agents.state import (
     Actor,
+    CaseInput,
+    CaseOutput,
     CaseState,
     Condition,
     Decision,
@@ -21,16 +35,6 @@ from ..state import (
     HumanTaskRequest,
     Stage,
 )
-from ._helpers import timeline_entry
-from .adjudication_agent import make_adjudication_agent
-from .doc_verify_agent import (
-    CONFIDENCE_THRESHOLD,
-    make_doc_verify_agent,
-    make_redigitize_node,
-)
-from .exception_agent import make_exception_agent
-from .intake_agent import make_intake_agent
-from .underwriting_agent import make_underwriting_agent
 
 _MAX_VERIFY_RETRIES = 1
 
@@ -235,8 +239,9 @@ def build_case_graph(
     def route_after_conditions(state: CaseState) -> str:
         return "escalate" if _has_exception(state, ExceptionType.FRAUD_AML) else "gate_b"
 
-    # — Assemble —
-    g = StateGraph(CaseState)
+    # — Assemble — clean cloud I/O contract: input is a loan application, output is the
+    # decision plus the audit trail. Internal state remains the richer CaseState.
+    g = StateGraph(CaseState, input_schema=CaseInput, output_schema=CaseOutput)
     g.add_node("intake", intake)
     g.add_node("doc_verify", doc_verify)
     g.add_node("redigitize", redigitize)
@@ -305,7 +310,7 @@ def _decision_letter(
 # Module-level graph for langgraph.json / UiPath packaging (no checkpointer — the platform
 # injects durable execution). Guarded so importing never breaks packaging tooling.
 try:  # pragma: no cover - exercised only by packaging/import probes
-    from ..ports import get_port
+    from mortgage_agents.ports import get_port
 
     graph = build_case_graph(get_port())
 except Exception:  # pragma: no cover

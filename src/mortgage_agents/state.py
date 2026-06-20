@@ -259,27 +259,31 @@ class CaseState(TypedDict, total=False):
     terminal_decision: Decision | None
 
 
-def new_case_state(application: LoanApplication) -> CaseState:
-    """Build the initial state for a fresh case."""
+class CaseInput(TypedDict):
+    """The agent's input contract — a loan application kicks off the case.
 
-    return CaseState(
-        case_id=application.case_id,
-        application=application,
-        stage=Stage.INTAKE,
-        doc_checklist={},
-        missing_docs=[],
-        extractions=[],
-        consistency_findings=[],
-        verify_retry_count=0,
-        financials=None,
-        credit_profile=None,
-        metrics=None,
-        recommendation=None,
-        aml_result=None,
-        conditions=[],
-        exceptions=[],
-        human_decisions=[],
-        timeline=[],
-        terminal=False,
-        terminal_decision=None,
-    )
+    Used as the graph's ``input_schema`` so the deployed UiPath agent exposes a clean,
+    minimal I/O contract (rather than the full internal :class:`CaseState`). Remaining
+    state channels initialise from their defaults (reducer lists start empty; other keys
+    are read via ``.get`` with defaults).
+    """
+
+    application: LoanApplication
+
+
+class CaseOutput(TypedDict):
+    """The agent's output contract — the decision and the audit trail behind it."""
+
+    terminal_decision: Decision | None
+    recommendation: Recommendation | None
+    metrics: Metrics | None
+    conditions: list[Condition]
+    exceptions: list[ExceptionEvent]
+    human_decisions: list[HumanDecision]
+    timeline: list[TimelineEntry]
+
+
+def new_case_state(application: LoanApplication) -> CaseInput:
+    """Build the initial input for a fresh case (matches the graph ``input_schema``)."""
+
+    return CaseInput(application=application)

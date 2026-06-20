@@ -1,0 +1,112 @@
+# Declarative definition of the mortgage underwriting Maestro Case.
+#
+# This is the single source of truth for the case lifecycle. The LangGraph orchestrator
+# (src/mortgage_agents/graphs/case_orchestrator.py) implements it 1:1, and a UiPath builder
+# reconstructs the same stages, agents, gates, and exception routes in the Maestro Case
+# designer from this file (see DEPLOY_UIPATH.md).
+
+case:
+  name: Mortgage Underwriting
+  entity: loan_application
+  description: >
+    Dynamic, exception-heavy mortgage underwriting — intake to human-approved decision —
+    with coded agents, RPA, Document Understanding, and humans in charge of credit calls.
+
+actors:
+  - { id: intake_agent,        type: coded_agent, runtime: langgraph }
+  - { id: doc_verify_agent,    type: coded_agent, runtime: langgraph }
+  - { id: underwriting_agent,  type: coded_agent, runtime: langgraph }
+  - { id: adjudication_agent,  type: coded_agent, runtime: langgraph, notes: "CrewAI sub-crew for borderline files" }
+  - { id: exception_agent,     type: coded_agent, runtime: langgraph }
+  - { id: rpa_ingest,          type: robot }
+  - { id: document_understanding, type: idp_service }
+  - { id: loan_officer,        type: human, channel: action_center }
+  - { id: underwriter,         type: human, channel: action_center }
+  - { id: compliance,          type: human, channel: action_center }
+
+stages:
+  - id: intake
+    actor: intake_agent
+    description: Classify documents, build the required-docs checklist, triage completeness.
+    transitions:
+      - { when: "missing required docs", to: request_info }
+      - { else: true, to: doc_verification }
+
+  - id: doc_verification
+    actor: doc_verify_agent
+    uses: [document_understanding]
+    description: Extract fields, cross-check identity/employer, gate on confidence.
+    transitions:
+      - { when: "low confidence and retries remain", to: redigitize }
+      - { when: "low confidence or conflicting data", to: verify_gate }
+      - { else: true, to: income_analysis }
+
+  - id: redigitize
+    actor: rpa_ingest
+    description: Automatic re-extraction pass (one retry) before escalating to a human.
+    transitions: [{ else: true, to: doc_verification }]
+
+  - id: verify_gate
+    actor: loan_officer
+    gate: true
+    description: Human verifies/corrects extracted data (Action Center task).
+    transitions: [{ else: true, to: income_analysis }]
+
+  - id: income_analysis
+    actor: underwriting_agent
+    description: Compute qualifying income (W-2 vs self-employed), reserves, stability.
+    transitions: [{ else: true, to: adjudication }]
+
+  - id: adjudication
+    actor: adjudication_agent
+    description: Pull credit, compute DTI/LTV, apply policy, self-critique compensating factors.
+    transitions:
+      - { when: "credit pull exhausted retries", to: escalate }
+      - { when: "borderline", to: gate_a }
+      - { else: true, to: conditions }
+
+  - id: gate_a
+    actor: underwriter
+    gate: true
+    decision_support: true
+    description: Human decision support on a borderline file (approve / conditional / decline).
+    transitions: [{ else: true, to: conditions }]
+
+  - id: conditions
+    actor: exception_agent
+    description: AML/fraud screen, assemble conditions.
+    transitions:
+      - { when: "aml hit", to: escalate }
+      - { else: true, to: gate_b }
+
+  - id: gate_b
+    actor: loan_officer
+    gate: true
+    authority: true
+    description: Final credit decision — human authority. Required on every approved/declined case.
+    transitions: [{ else: true, to: closing }]
+
+  - id: closing
+    actor: rpa_ingest
+    terminal: true
+    description: Generate commitment/decline letter; close the case.
+
+  - id: request_info
+    actor: rpa_ingest
+    terminal: true
+    description: Email borrower for missing documents; suspend (info_requested).
+
+  - id: escalate
+    actor: compliance
+    terminal: true
+    description: Hard escalation out of the automated flow (AML hit or system failure).
+
+# Exception routes — see src/mortgage_agents/policy/exception_policy.py
+exception_routes:
+  missing_docs:      { route: request_info,        retries: 0, escalate_to: borrower }
+  low_confidence:    { route: reverify_then_human, retries: 1, escalate_to: loan_processor }
+  conflicting_data:  { route: reverify_then_human, retries: 1, escalate_to: loan_processor }
+  dti_exceeded:      { route: adjudicate,          retries: 0 }
+  appraisal_gap:     { route: recompute_then_human, retries: 0, escalate_to: loan_officer }
+  fraud_aml:         { route: escalate_compliance, retries: 0, escalate_to: compliance }
+  transient_failure: { route: retry_backoff,       retries: 3, escalate_to: system }

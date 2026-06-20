@@ -13,9 +13,10 @@ venv/
 .env.*
 !.env.example
 
-# UiPath packaging
+# UiPath packaging & local runtime state
 *.nupkg
 .uipath/
+__uipath/
 
 # Local runtime state (Action Inbox, checkpoints, artifacts)
 .runtime/

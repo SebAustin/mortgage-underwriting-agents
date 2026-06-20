@@ -29,7 +29,7 @@ def _drive(port, application, decisions, settings):
         choice = decisions.get(gate, "approve")
         out = graph.invoke(Command(resume={"choice": choice, "note": "test"}), cfg)
         safety += 1
-    return out
+    return graph.get_state(cfg).values  # full internal state for assertions
 
 
 class _FlakyRecoverAdapter(LocalAdapter):

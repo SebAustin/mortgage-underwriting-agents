@@ -1,0 +1,7 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "mortgage-case": "./src/mortgage_agents/graphs/case_orchestrator.py:graph"
+  },
+  "env": ".env"
+}
