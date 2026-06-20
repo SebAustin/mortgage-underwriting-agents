@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}{{ case_id }} · Underwriting Desk{% endblock %}
+{% block content %}
+
+<div class="row">
+  <h1 style="margin:0">{{ case_id }}</h1>
+  {% if view.decision %}<span class="chip {{ view.decision }}">{{ view.decision }}</span>
+  {% elif record %}<span class="chip {{ record.status }}">{{ record.status }}</span>{% endif %}
+</div>
+{% if view.applicant %}
+<p class="muted">{{ view.applicant }} · loan ${{ "{:,.0f}".format(view.loan_amount) }}
+  on ${{ "{:,.0f}".format(view.purchase_price) }} · stage <b>{{ view.stage }}</b></p>
+{% endif %}
+
+{% if pending %}
+<h2>Human action required — {{ pending.gate }}</h2>
+<div class="card gate">
+  <h3>{{ pending.title }}</h3>
+  <div class="rationale">{{ pending.summary }}</div>
+  <form action="/resolve" method="post">
+    <input type="hidden" name="task_id" value="{{ pending.task_id }}" />
+    <input type="hidden" name="case_id" value="{{ case_id }}" />
+    <input type="text" name="note" placeholder="Reviewer note (optional)" />
+    {% for opt in pending.options %}
+    <button type="submit" name="choice" value="{{ opt }}"
+            class="{% if opt in ['decline','rejected'] %}ghost{% endif %}">{{ opt }}</button>
+    {% endfor %}
+  </form>
+</div>
+{% endif %}
+
+{% if view.metrics %}
+<h2>Underwriting metrics</h2>
+<div class="card">
+  <div class="metrics">
+    <div class="m"><b>{{ "{:.0%}".format(view.metrics.dti) }}</b><span>Back-end DTI</span></div>
+    <div class="m"><b>{{ "{:.0%}".format(view.metrics.front) }}</b><span>Front-end DTI</span></div>
+    <div class="m"><b>{{ "{:.0%}".format(view.metrics.ltv) }}</b><span>LTV</span></div>
+    {% if view.credit_score %}<div class="m"><b>{{ view.credit_score }}</b><span>Credit score</span></div>{% endif %}
+  </div>
+</div>
+{% endif %}
+
+{% if view.recommendation %}
+<h2>Agent recommendation
+  <span class="chip {{ view.recommendation.decision }}">{{ view.recommendation.decision }}</span>
+  {% if view.recommendation.borderline %}<span class="chip pending">borderline</span>{% endif %}
+</h2>
+<div class="card">
+  <div class="rationale">{{ view.recommendation.rationale }}</div>
+  {% if view.recommendation.factors %}
+  <p class="muted" style="margin-top:.7rem">Compensating factors</p>
+  <ul class="flat">{% for f in view.recommendation.factors %}<li>{{ f }}</li>{% endfor %}</ul>
+  {% endif %}
+  {% if view.recommendation.conditions %}
+  <p class="muted">Conditions</p>
+  <ul class="flat">{% for c in view.recommendation.conditions %}<li>{{ c }}</li>{% endfor %}</ul>
+  {% endif %}
+  <p class="muted">Policy citations</p>
+  <ul class="flat">{% for c in view.recommendation.citations %}<li>{{ c }}</li>{% endfor %}</ul>
+</div>
+{% endif %}
+
+{% if view.exceptions %}
+<h2>Exceptions</h2>
+<div class="card">
+  <ul class="flat">
+  {% for e in view.exceptions %}<li><b>{{ e.type }}</b> ({{ e.severity }}) — {{ e.detail }}</li>{% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+{% if view.timeline %}
+<h2>Case timeline</h2>
+<div class="card">
+  <ol class="timeline">
+    {% for t in view.timeline %}
+    <li>
+      <span class="stage">{{ t.stage }}</span>
+      <span class="actor {{ t.actor }}">{{ t.actor }}</span>
+      <span><b>{{ t.action }}</b>{% if t.detail %} <span class="muted">— {{ t.detail }}</span>{% endif %}</span>
+    </li>
+    {% endfor %}
+  </ol>
+</div>
+{% endif %}
+
+{% endblock %}

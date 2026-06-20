@@ -132,6 +132,20 @@ def start_case(
     return summary
 
 
+def load_state(case_id: str, settings: Settings | None = None) -> CaseState | None:
+    """Read the persisted state for a case from the durable checkpointer (read-only).
+
+    ``get_state`` does not execute nodes, so a default port is sufficient here.
+    """
+
+    settings = settings or get_settings()
+    conn = sqlite3.connect(_checkpoints_path(settings), check_same_thread=False)
+    graph = build_case_graph(_build_port({}, settings), checkpointer=make_checkpointer(conn))
+    snapshot = graph.get_state({"configurable": {"thread_id": case_id}})
+    conn.close()
+    return snapshot.values if snapshot and snapshot.values else None
+
+
 def resume(
     task_id: str,
     choice: str,

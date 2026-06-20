@@ -203,5 +203,22 @@ def cases(live: bool = typer.Option(False, "--live", hidden=True)) -> None:
     store.close()
 
 
+@app.command()
+def serve(
+    host: str = typer.Option("127.0.0.1", help="Bind host."),
+    port: int = typer.Option(8000, help="Bind port."),
+) -> None:
+    """Launch the FastAPI loan-officer desk (requires the `web` extra)."""
+    try:
+        import uvicorn
+
+        from .webui.app import app as web_app
+    except ImportError as exc:  # pragma: no cover
+        console.print(f"[red]Web UI needs the 'web' extra: pip install -e '.[web]' ({exc})[/]")
+        raise typer.Exit(1) from exc
+    console.print(f"[green]Underwriting Desk →[/] http://{host}:{port}")
+    uvicorn.run(web_app, host=host, port=port)
+
+
 if __name__ == "__main__":
     app()

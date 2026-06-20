@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% if pending %}
+<h2>Pending human actions ({{ pending|length }})</h2>
+<div class="grid">
+  {% for t in pending %}
+  <div class="card gate">
+    <div class="row"><h3>{{ t.title }}</h3><span class="chip pending">{{ t.gate }}</span></div>
+    <p class="desc">{{ t.summary }}</p>
+    <a class="btn" href="/case/{{ t.case_id }}">Review &amp; decide →</a>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<h2>Start a new case</h2>
+<div class="grid">
+  {% for p in personas %}
+  <div class="card">
+    <div class="row">
+      <h3>{{ p.name }}</h3>
+      <span class="chip {{ p.expected_decision.value }}">{{ p.expected_decision.value }}</span>
+    </div>
+    <p class="desc">{{ p.description }}</p>
+    <form action="/start" method="post">
+      <input type="hidden" name="persona" value="{{ p.name }}" />
+      <button type="submit">Run case</button>
+    </form>
+  </div>
+  {% endfor %}
+</div>
+
+<h2>Cases</h2>
+{% if cases %}
+<div class="grid">
+  {% for c in cases %}
+  <a class="card" href="/case/{{ c.case_id }}" style="text-decoration:none;color:inherit">
+    <div class="row">
+      <h3>{{ c.case_id }}</h3>
+      <span class="chip {{ c.status }}">{{ c.status }}</span>
+    </div>
+    <p class="desc">{{ c.persona }}</p>
+    {% if c.terminal_decision %}<span class="chip {{ c.terminal_decision }}">{{ c.terminal_decision }}</span>{% endif %}
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<p class="muted">No cases yet — start one above.</p>
+{% endif %}
+
+{% endblock %}
