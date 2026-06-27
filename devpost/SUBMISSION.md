@@ -2,7 +2,7 @@
 
 **Track:** Track 1 — UiPath Maestro Case
 **License:** Apache-2.0
-**Repo:** <add public GitHub URL> · **Demo video:** <add YouTube/Vimeo URL> · **Deck:** <add link>
+**Repo:** <add public GitHub URL> · **Demo video:** <upload `video/demo.mp4` to YouTube/Vimeo, add URL> · **Deck:** <add link>
 
 ## Elevator pitch
 An agentic, exception-heavy **mortgage underwriting case** built as **UiPath Coded Agents**

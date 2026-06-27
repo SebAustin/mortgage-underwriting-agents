@@ -6,6 +6,10 @@
 >
 > **AgentHack 2026 — Track 1: UiPath Maestro Case** · License: Apache-2.0
 
+🎬 **Demo video:** [`video/demo.mp4`](video/demo.mp4) — a narrated 3-minute walkthrough
+assembled from real captured runs (see [`video/README.md`](video/README.md)). Upload it to
+YouTube/Vimeo and drop the link into the Devpost submission.
+
 A loan application enters; five coordinated agents move it through intake, document
 verification, income analysis, credit & risk adjudication, and compliance — pausing for
 human judgement at the moments that matter, escalating true exceptions, and recovering
