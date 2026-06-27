@@ -31,7 +31,13 @@ __uipath/
 htmlcov/
 coverage.xml
 
-# OS / editor
+# OS / editor / external agent tooling
 .DS_Store
 .idea/
 .vscode/
+.cursor/
+
+# Demo video — regenerable intermediates (keep scenes/, frames/, assets/, demo.mp4)
+video/audio/
+video/clips/
+video/frames/_probe_*.png

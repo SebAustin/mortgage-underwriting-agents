@@ -1,0 +1,84 @@
+<!doctype html><html><head><meta charset='utf-8'><style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root{
+  --bg:#0b0e14; --panel:#141925; --line:#232a39; --ink:#e6eaf2; --soft:#94a0b8;
+  --accent:#7c8cff; --accent-soft:#1b2138; --mono:'Menlo','SF Mono',monospace;
+  --sans:-apple-system,'Helvetica Neue',sans-serif;
+}
+html,body{ width:1920px; height:1080px; overflow:hidden; }
+body{ background:
+   radial-gradient(1200px 700px at 80% -10%, #161d2e 0%, transparent 60%),
+   radial-gradient(900px 600px at -10% 110%, #14223a 0%, transparent 55%), var(--bg);
+   color:var(--ink); font-family:var(--sans); -webkit-font-smoothing:antialiased; }
+.stage{ width:1920px; height:1080px; padding:96px 130px; display:flex; flex-direction:column; }
+.kicker{ font-family:var(--mono); font-size:26px; letter-spacing:.35em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:28px; }
+h1{ font-size:104px; line-height:1.02; letter-spacing:-.02em; font-weight:800; }
+h1 .sub{ display:block; font-size:46px; font-weight:500; color:var(--soft); margin-top:30px;
+  letter-spacing:0; line-height:1.3; }
+h2{ font-size:64px; line-height:1.08; letter-spacing:-.01em; font-weight:750; margin-bottom:44px; }
+.badges{ margin-top:auto; display:flex; gap:18px; flex-wrap:wrap; }
+.badge{ font-family:var(--mono); font-size:24px; color:var(--soft); border:1px solid var(--line);
+  border-radius:999px; padding:12px 22px; background:#0e131d; }
+.badge b{ color:var(--ink); }
+ul.points{ list-style:none; display:flex; flex-direction:column; gap:30px; margin-top:8px; }
+ul.points li{ font-size:42px; line-height:1.32; padding-left:54px; position:relative; color:#d7deec; }
+ul.points li::before{ content:''; position:absolute; left:0; top:18px; width:24px; height:24px;
+  border-radius:7px; background:var(--accent); box-shadow:0 0 0 6px var(--accent-soft); }
+ul.points li b{ color:#fff; }
+.term{ background:var(--panel); border:1px solid var(--line); border-radius:20px; overflow:hidden;
+  box-shadow:0 30px 80px rgba(0,0,0,.45); flex:1; display:flex; flex-direction:column; }
+.term .bar{ display:flex; gap:11px; padding:22px 26px; border-bottom:1px solid var(--line);
+  align-items:center; }
+.dot{ width:16px; height:16px; border-radius:50%; }
+.term .bar .t{ margin-left:18px; font-family:var(--mono); font-size:24px; color:var(--soft); }
+.term .body{ padding:30px 40px; font-family:var(--mono); font-size:30px; line-height:1.0; flex:1; }
+.cmd{ font-size:32px; margin-bottom:26px; }
+.cmd .p{ color:var(--accent); } .cmd .c{ color:#fff; }
+.tl{ display:flex; flex-direction:column; gap:14px; }
+.row{ display:grid; grid-template-columns:300px 130px 1fr; gap:24px; align-items:baseline; font-size:27px; }
+.row .stg{ color:var(--soft); text-transform:uppercase; font-size:22px; letter-spacing:.06em; }
+.row .act{ font-weight:700; text-transform:uppercase; font-size:21px; letter-spacing:.05em; }
+.row .desc b{ color:#fff; } .row .desc{ color:#b9c2d6; }
+.outcome{ margin-top:30px; display:flex; align-items:center; gap:28px; }
+.chip{ font-family:var(--mono); font-weight:800; text-transform:uppercase; letter-spacing:.05em;
+  font-size:34px; padding:16px 34px; border-radius:14px; color:#0b0e14; }
+.metrics{ font-family:var(--mono); font-size:30px; color:var(--soft); }
+.metrics b{ color:#fff; }
+.flow{ display:flex; flex-direction:column; gap:34px; margin-top:10px; flex:1; justify-content:center; }
+.lane{ display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
+.node{ font-size:30px; padding:20px 30px; border-radius:14px; background:var(--panel);
+  border:1px solid var(--line); font-weight:650; }
+.node.agent{ border-color:#2f7d5e; } .node.human{ border-color:#5b4aa6; background:#1a1733; }
+.node.term{ border-color:#7c8cff; }
+.arrow{ color:var(--soft); font-size:34px; }
+.seam{ margin-top:40px; display:grid; grid-template-columns:1fr 90px 1fr; gap:22px; align-items:stretch; }
+.col{ background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:34px 38px; }
+.col h3{ font-size:30px; margin-bottom:22px; color:var(--accent); font-family:var(--mono);
+  letter-spacing:.04em; }
+.col .line{ font-size:28px; color:#c4cde0; margin:14px 0; }
+.seam .mid{ display:flex; align-items:center; justify-content:center; font-family:var(--mono);
+  font-size:26px; color:var(--soft); text-align:center; }
+table.cmp{ width:100%; border-collapse:collapse; margin-top:8px; font-size:30px; }
+table.cmp th{ text-align:left; color:var(--soft); font-family:var(--mono); font-size:24px;
+  text-transform:uppercase; letter-spacing:.06em; padding:18px 22px; border-bottom:2px solid var(--line); }
+table.cmp td{ padding:20px 22px; border-bottom:1px solid var(--line); color:#cdd6e8; }
+table.cmp td b{ color:#fff; } table.cmp tr td:first-child{ color:var(--accent); font-family:var(--mono); font-size:26px; }
+.shot{ flex:1; border-radius:18px; border:1px solid var(--line); overflow:hidden; margin-top:6px;
+  box-shadow:0 30px 80px rgba(0,0,0,.5); background:#fff; display:flex; }
+.shot img{ width:100%; height:100%; object-fit:cover; object-position:top center; }
+.foot{ margin-top:auto; font-family:var(--mono); font-size:26px; color:var(--soft); }
+.big{ font-size:150px; font-weight:800; letter-spacing:-.03em; line-height:1; }
+.center{ align-items:flex-start; justify-content:center; }
+.spacer{ flex:1; }
+</style></head><body>
+          <div class='stage'>
+            <div class='kicker'>built with claude code &middot; UiPath for Coding Agents</div>
+            <h1>Agents underwrite.<span class='sub'>Humans decide. UiPath governs.</span></h1>
+            <div class='badges'>
+              <span class='badge'><b>72</b> tests</span>
+              <span class='badge'><b>93%</b> coverage</span>
+              <span class='badge'>0 open Critical/High</span>
+              <span class='badge'>valid <b>.nupkg</b> without a tenant</span>
+            </div>
+          </div></body></html>

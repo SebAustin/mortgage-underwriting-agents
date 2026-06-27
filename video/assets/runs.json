@@ -1,0 +1,389 @@
+{
+  "runs": {
+    "clean_approve": {
+      "persona": "clean_approve",
+      "description": "Strong file: 760 score, 29% DTI, 80% LTV \u2192 straight-through approval.",
+      "case_id": "CASE-CLEAN",
+      "applicant": "Jordan Rivera",
+      "loan_amount": 320000.0,
+      "purchase_price": 400000.0,
+      "terminal_decision": "approve",
+      "metrics": {
+        "dti": 0.2946,
+        "front_end_dti": 0.2546,
+        "ltv": 0.8
+      },
+      "credit_score": 760,
+      "recommendation": {
+        "decision": "approve",
+        "borderline": false,
+        "confidence": 0.92,
+        "rationale": "Clean file \u2014 all policy gates satisfied: Credit score 760 \u2265 620; Back-end DTI 29% \u2264 43%; LTV 80% \u2264 97%",
+        "compensating_factors": [
+          "Strong liquid reserves (6.0 months)",
+          "Excellent credit score (760)",
+          "Stable employment (36 months)",
+          "Substantial equity (LTV 80%)"
+        ],
+        "conditions": [],
+        "policy_citations": [
+          "Credit score 760 \u2265 620",
+          "Back-end DTI 29% \u2264 43%",
+          "LTV 80% \u2264 97%"
+        ]
+      },
+      "exceptions": [],
+      "human_decisions": [
+        {
+          "gate": "gate_b",
+          "choice": "approve",
+          "by": "loan_officer"
+        }
+      ],
+      "timeline": [
+        {
+          "stage": "intake",
+          "actor": "agent",
+          "action": "Triaged application",
+          "detail": "4 docs received; missing=none"
+        },
+        {
+          "stage": "doc_verification",
+          "actor": "agent",
+          "action": "Verified documents",
+          "detail": "min_confidence=0.99; findings=0"
+        },
+        {
+          "stage": "income_analysis",
+          "actor": "agent",
+          "action": "Computed qualifying income",
+          "detail": "$10,000/mo (W-2 annual wages / 12); reserves $60,000"
+        },
+        {
+          "stage": "adjudication",
+          "actor": "agent",
+          "action": "Adjudicated: approve",
+          "detail": "DTI 29%, LTV 80%, score 760, borderline=False"
+        },
+        {
+          "stage": "conditions",
+          "actor": "agent",
+          "action": "Screened AML & assembled conditions",
+          "detail": "aml_hit=False (risk 0.02); 0 condition(s)"
+        },
+        {
+          "stage": "decision",
+          "actor": "human",
+          "action": "Gate B \u2014 final decision: approve",
+          "detail": "auto:clean_approve"
+        },
+        {
+          "stage": "closed",
+          "actor": "robot",
+          "action": "Closed: approve",
+          "detail": "letter \u2192 .runtime/artifacts/CASE-CLEAN/decision_letter.txt"
+        }
+      ],
+      "emails_sent": 0
+    },
+    "conditional_approve": {
+      "persona": "conditional_approve",
+      "description": "Borderline 44% DTI rescued by strong reserves & 760 score \u2192 Gate A then conditional.",
+      "case_id": "CASE-COND",
+      "applicant": "Sam Patel",
+      "loan_amount": 320000.0,
+      "purchase_price": 400000.0,
+      "terminal_decision": "conditional_approve",
+      "metrics": {
+        "dti": 0.4401,
+        "front_end_dti": 0.3182,
+        "ltv": 0.8
+      },
+      "credit_score": 760,
+      "recommendation": {
+        "decision": "conditional_approve",
+        "borderline": true,
+        "confidence": 0.72,
+        "rationale": "Borderline metrics offset by compensating factors (Strong liquid reserves (8.0 months); Excellent credit score (760); Stable employment (36 months); Substantial equity (LTV 80%)). Recommend conditional approval subject to: Verify final income and asset documentation",
+        "compensating_factors": [
+          "Strong liquid reserves (8.0 months)",
+          "Excellent credit score (760)",
+          "Stable employment (36 months)",
+          "Substantial equity (LTV 80%)"
+        ],
+        "conditions": [
+          "Verify final income and asset documentation"
+        ],
+        "policy_citations": [
+          "Credit score 760 \u2265 620",
+          "Back-end DTI 44% over 43% but within borderline band",
+          "LTV 80% \u2264 97%"
+        ]
+      },
+      "exceptions": [
+        {
+          "type": "dti_exceeded",
+          "severity": "medium",
+          "detail": "Back-end DTI 44% over 43%"
+        }
+      ],
+      "human_decisions": [
+        {
+          "gate": "gate_a",
+          "choice": "conditional_approve",
+          "by": "loan_officer"
+        },
+        {
+          "gate": "gate_b",
+          "choice": "conditional_approve",
+          "by": "loan_officer"
+        }
+      ],
+      "timeline": [
+        {
+          "stage": "intake",
+          "actor": "agent",
+          "action": "Triaged application",
+          "detail": "4 docs received; missing=none"
+        },
+        {
+          "stage": "doc_verification",
+          "actor": "agent",
+          "action": "Verified documents",
+          "detail": "min_confidence=0.99; findings=0"
+        },
+        {
+          "stage": "income_analysis",
+          "actor": "agent",
+          "action": "Computed qualifying income",
+          "detail": "$8,000/mo (W-2 annual wages / 12); reserves $64,000"
+        },
+        {
+          "stage": "adjudication",
+          "actor": "agent",
+          "action": "Adjudicated: conditional_approve",
+          "detail": "DTI 44%, LTV 80%, score 760, borderline=True"
+        },
+        {
+          "stage": "adjudication",
+          "actor": "human",
+          "action": "Gate A \u2014 underwriter steer",
+          "detail": "conditional_approve \u2014 auto:conditional_approve"
+        },
+        {
+          "stage": "conditions",
+          "actor": "agent",
+          "action": "Screened AML & assembled conditions",
+          "detail": "aml_hit=False (risk 0.03); 1 condition(s)"
+        },
+        {
+          "stage": "decision",
+          "actor": "human",
+          "action": "Gate B \u2014 final decision: conditional_approve",
+          "detail": "auto:conditional_approve"
+        },
+        {
+          "stage": "closed",
+          "actor": "robot",
+          "action": "Closed: conditional_approve",
+          "detail": "letter \u2192 .runtime/artifacts/CASE-COND/decision_letter.txt"
+        }
+      ],
+      "emails_sent": 0
+    },
+    "decline": {
+      "persona": "decline",
+      "description": "Thin file: 580 score + 3 derogatories + high LTV \u2192 decline (human confirms).",
+      "case_id": "CASE-DECLINE",
+      "applicant": "Casey Lin",
+      "loan_amount": 360000.0,
+      "purchase_price": 400000.0,
+      "terminal_decision": "decline",
+      "metrics": {
+        "dti": 0.7186,
+        "front_end_dti": 0.4686,
+        "ltv": 0.9
+      },
+      "credit_score": 580,
+      "recommendation": {
+        "decision": "decline",
+        "borderline": false,
+        "confidence": 0.85,
+        "rationale": "Hard policy breach \u2014 Credit score 580 < 620; 3 derogatory marks > 2; Back-end DTI 72% > 43%",
+        "compensating_factors": [
+          "Stable employment (36 months)"
+        ],
+        "conditions": [],
+        "policy_citations": [
+          "LTV 90% \u2264 97%",
+          "Reserves 0.8mo < required 2.0mo (condition)"
+        ]
+      },
+      "exceptions": [
+        {
+          "type": "dti_exceeded",
+          "severity": "medium",
+          "detail": "Back-end DTI 72% over 43%"
+        }
+      ],
+      "human_decisions": [
+        {
+          "gate": "gate_b",
+          "choice": "decline",
+          "by": "loan_officer"
+        }
+      ],
+      "timeline": [
+        {
+          "stage": "intake",
+          "actor": "agent",
+          "action": "Triaged application",
+          "detail": "4 docs received; missing=none"
+        },
+        {
+          "stage": "doc_verification",
+          "actor": "agent",
+          "action": "Verified documents",
+          "detail": "min_confidence=0.99; findings=0"
+        },
+        {
+          "stage": "income_analysis",
+          "actor": "agent",
+          "action": "Computed qualifying income",
+          "detail": "$6,000/mo (W-2 annual wages / 12); reserves $5,000"
+        },
+        {
+          "stage": "adjudication",
+          "actor": "agent",
+          "action": "Adjudicated: decline",
+          "detail": "DTI 72%, LTV 90%, score 580, borderline=False"
+        },
+        {
+          "stage": "conditions",
+          "actor": "agent",
+          "action": "Screened AML & assembled conditions",
+          "detail": "aml_hit=False (risk 0.10); 0 condition(s)"
+        },
+        {
+          "stage": "decision",
+          "actor": "human",
+          "action": "Gate B \u2014 final decision: decline",
+          "detail": "auto:decline"
+        },
+        {
+          "stage": "closed",
+          "actor": "robot",
+          "action": "Closed: decline",
+          "detail": "letter \u2192 .runtime/artifacts/CASE-DECLINE/decision_letter.txt"
+        }
+      ],
+      "emails_sent": 0
+    },
+    "fraud_exception": {
+      "persona": "fraud_exception",
+      "description": "Conflicting employer (human verify) + AML watchlist hit \u2192 escalate to compliance.",
+      "case_id": "CASE-FRAUD",
+      "applicant": "Morgan Gray",
+      "loan_amount": 320000.0,
+      "purchase_price": 400000.0,
+      "terminal_decision": "escalated",
+      "metrics": {
+        "dti": 0.3432,
+        "front_end_dti": 0.2777,
+        "ltv": 0.8
+      },
+      "credit_score": 700,
+      "recommendation": {
+        "decision": "approve",
+        "borderline": false,
+        "confidence": 0.92,
+        "rationale": "Clean file \u2014 all policy gates satisfied: Credit score 700 \u2265 620; Back-end DTI 34% \u2264 43%; LTV 80% \u2264 97%",
+        "compensating_factors": [
+          "Substantial equity (LTV 80%)"
+        ],
+        "conditions": [],
+        "policy_citations": [
+          "Credit score 700 \u2265 620",
+          "Back-end DTI 34% \u2264 43%",
+          "LTV 80% \u2264 97%"
+        ]
+      },
+      "exceptions": [
+        {
+          "type": "conflicting_data",
+          "severity": "high",
+          "detail": "Conflicting 'employer' across documents: ['acme corp', 'globex inc']"
+        },
+        {
+          "type": "fraud_aml",
+          "severity": "critical",
+          "detail": "AML watchlist hit: OFAC SDN"
+        }
+      ],
+      "human_decisions": [
+        {
+          "gate": "verify_field",
+          "choice": "verified",
+          "by": "loan_officer"
+        }
+      ],
+      "timeline": [
+        {
+          "stage": "intake",
+          "actor": "agent",
+          "action": "Triaged application",
+          "detail": "4 docs received; missing=none"
+        },
+        {
+          "stage": "doc_verification",
+          "actor": "agent",
+          "action": "Verified documents",
+          "detail": "min_confidence=0.99; findings=1"
+        },
+        {
+          "stage": "doc_verification",
+          "actor": "human",
+          "action": "Verified document data",
+          "detail": "verified"
+        },
+        {
+          "stage": "income_analysis",
+          "actor": "agent",
+          "action": "Computed qualifying income",
+          "detail": "$9,167/mo (W-2 annual wages / 12); reserves $40,000"
+        },
+        {
+          "stage": "adjudication",
+          "actor": "agent",
+          "action": "Adjudicated: approve",
+          "detail": "DTI 34%, LTV 80%, score 700, borderline=False"
+        },
+        {
+          "stage": "conditions",
+          "actor": "agent",
+          "action": "Screened AML & assembled conditions",
+          "detail": "aml_hit=True (risk 0.88); 0 condition(s)"
+        },
+        {
+          "stage": "conditions",
+          "actor": "system",
+          "action": "Escalated out of automated flow",
+          "detail": "fraud_aml: AML watchlist hit: OFAC SDN"
+        }
+      ],
+      "emails_sent": 0
+    }
+  },
+  "durable_gate": {
+    "status": "suspended",
+    "gate": "gate_a",
+    "task_id": "CASE-COND-gate_a-05b748",
+    "title": "Underwriting decision support (borderline case)",
+    "summary": "Borderline metrics offset by compensating factors (Strong liquid reserves (8.0 months); Excellent credit score (760); Stable employment (36 months); Substantial equity (LTV 80%)). Recommend conditional approval subject to: Verify final income and asset documentation",
+    "options": [
+      "approve",
+      "conditional_approve",
+      "decline"
+    ]
+  }
+}

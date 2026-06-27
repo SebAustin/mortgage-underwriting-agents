@@ -1,0 +1,62 @@
+[
+  {
+    "id": "01_title",
+    "file": "/Users/sebastienhenry/Documents/Hackathons/UiPath AgentHack/mortgage-underwriting-agents/video/scenes/01_title.html",
+    "speak": "Mortgage Underwriting Agents. An agentic UiPath Maestro Case, built entirely with Claude Code, where coded agents underwrite and humans decide.",
+    "seconds": 11
+  },
+  {
+    "id": "02_problem",
+    "file": "/Users/sebastienhenry/Documents/Hackathons/UiPath AgentHack/mortgage-underwriting-agents/video/scenes/02_problem.html",
+    "speak": "Mortgage underwriting is dynamic and exception heavy. Most files are routine, but the tail needs document chasing, re-verification, judgement calls, and fraud escalation. Rigid robots cannot handle the exceptions, and a raw language model is unacceptable for a regulated credit decision. The right shape is agentic case management.",
+    "seconds": 22
+  },
+  {
+    "id": "03_architecture",
+    "file": "/Users/sebastienhenry/Documents/Hackathons/UiPath AgentHack/mortgage-underwriting-agents/video/scenes/03_architecture.html",
+    "speak": "Five coded LangGraph agents move each loan through six stages: intake, document verification, income analysis, adjudication, compliance, and decision. The key idea: agents never call the UiPath SDK directly. Every side effect goes through one platform port, so the exact same graph runs locally with mocks and on UiPath Automation Cloud.",
+    "seconds": 26
+  },
+  {
+    "id": "04_clean",
+    "file": "/Users/sebastienhenry/Documents/Hackathons/UiPath AgentHack/mortgage-underwriting-agents/video/scenes/04_clean.html",
+    "speak": "Here is a clean file, running for real. Intake triages documents, the agents verify them, compute income, and adjudicate: twenty-nine percent debt-to-income, eighty percent loan-to-value, a seven-sixty score. The recommendation is approve, and only the final human gate fires.",
+    "seconds": 24
+  },
+  {
+    "id": "05_borderline",
+    "file": "/Users/sebastienhenry/Documents/Hackathons/UiPath AgentHack/mortgage-underwriting-agents/video/scenes/05_borderline.html",
+    "speak": "This file is borderline: a forty-four percent debt-to-income ratio. The adjudication agent finds compensating factors, strong reserves and a seven-sixty score, and flags it for a human. Gate A is the underwriter's decision support; Gate B is final authority. Two humans, two distinct roles, ending in a conditional approval.",
+    "seconds": 30
+  },
+  {
+    "id": "06_hitl",
+    "file": "/Users/sebastienhenry/Documents/Hackathons/UiPath AgentHack/mortgage-underwriting-agents/video/scenes/06_hitl.html",
+    "speak": "And here is that human gate in the loan-officer desk. The underwriter sees the agent's metrics, its rationale, the compensating factors, the conditions, and the exact policy citations behind the recommendation, then approves, conditions, or declines.",
+    "seconds": 24
+  },
+  {
+    "id": "07_durable",
+    "file": "/Users/sebastienhenry/Documents/Hackathons/UiPath AgentHack/mortgage-underwriting-agents/video/scenes/07_durable.html",
+    "speak": "The case is durable. It suspends to SQLite in one process and resumes in another, exactly like Maestro's durable execution and Action Center. Start a case, it pauses at the gate, it appears in the inbox, and a separate command resumes it right where it left off.",
+    "seconds": 22
+  },
+  {
+    "id": "08_fraud",
+    "file": "/Users/sebastienhenry/Documents/Hackathons/UiPath AgentHack/mortgage-underwriting-agents/video/scenes/08_fraud.html",
+    "speak": "Exceptions are the product. This applicant's employer disagrees across documents, so the case routes to a human to verify. Then the anti-money-laundering screen hits a watchlist, a hard stop that escalates to compliance and never reaches an automated approval. All seven exception routes live in one auditable policy table.",
+    "seconds": 27
+  },
+  {
+    "id": "09_cloud",
+    "file": "/Users/sebastienhenry/Documents/Hackathons/UiPath AgentHack/mortgage-underwriting-agents/video/scenes/09_cloud.html",
+    "speak": "Because of the platform port, the same agent code runs on UiPath, selected by one environment variable. The coded agent already packages with uipath pack into a valid nu-pkg, verified without a tenant, with a clean input and output contract that UiPath generated.",
+    "seconds": 24
+  },
+  {
+    "id": "10_closing",
+    "file": "/Users/sebastienhenry/Documents/Hackathons/UiPath AgentHack/mortgage-underwriting-agents/video/scenes/10_closing.html",
+    "speak": "Five coded agents, durable human-in-the-loop, real exception handling, and a clean cloud port, built end to end by Claude Code. Seventy-two tests, ninety-three percent coverage, and security audited. Thank you.",
+    "seconds": 18
+  }
+]
