@@ -44,3 +44,8 @@ video/frames/_probe_*.png
 
 # Generated judge-submission bundle (regenerate with: git archive --format=zip -o devpost/caseweaver-submission.zip HEAD)
 devpost/*.zip
+
+# Deck build intermediates (keep CaseWeaver-Deck.pptx + deck_build/build.js)
+devpost/deck_build/node_modules/
+devpost/qa/
+devpost/*.pdf
