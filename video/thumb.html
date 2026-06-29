@@ -1,0 +1,35 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root{ --bg:#0b0e14; --ink:#eef2fa; --soft:#9aa6bf; --accent:#7c8cff;
+  --approve:#34d399; --cond:#fbbf24; --esc:#fb7185; --mono:'Menlo','SF Mono',monospace;
+  --sans:-apple-system,'Helvetica Neue',sans-serif; }
+html,body{ width:1920px; height:1080px; overflow:hidden; }
+body{ background:
+   radial-gradient(1300px 800px at 88% -12%, #1d2742 0%, transparent 58%),
+   radial-gradient(1000px 700px at -8% 112%, #15294a 0%, transparent 55%), var(--bg);
+   color:var(--ink); font-family:var(--sans); -webkit-font-smoothing:antialiased; }
+.wrap{ width:1920px; height:1080px; padding:110px 120px; display:flex; flex-direction:column; }
+.kicker{ font-family:var(--mono); font-size:34px; letter-spacing:.32em; text-transform:uppercase;
+  color:var(--accent); }
+h1{ font-size:188px; line-height:.96; letter-spacing:-.03em; font-weight:850; margin-top:54px; }
+h1 .a{ color:var(--accent); }
+.sub{ font-size:52px; color:var(--soft); margin-top:46px; font-weight:500; }
+.sub b{ color:#fff; }
+.chips{ display:flex; gap:26px; margin-top:auto; }
+.chip{ font-family:var(--mono); font-weight:800; text-transform:uppercase; letter-spacing:.05em;
+  font-size:40px; padding:20px 40px; border-radius:16px; color:#0b0e14; }
+.tag{ position:absolute; top:56px; right:70px; font-family:var(--mono); font-size:30px;
+  color:#0b0e14; background:var(--accent); padding:16px 28px; border-radius:999px; font-weight:800; }
+</style></head><body>
+  <div class="tag">Built with Claude Code</div>
+  <div class="wrap">
+    <div class="kicker">UiPath AgentHack 2026 &middot; Maestro Case</div>
+    <h1>Agents underwrite.<br><span class="a">Humans decide.</span></h1>
+    <div class="sub"><b>5 coded agents</b> &middot; durable human-in-the-loop &middot; on UiPath</div>
+    <div class="chips">
+      <span class="chip" style="background:var(--approve)">approve</span>
+      <span class="chip" style="background:var(--cond)">conditional</span>
+      <span class="chip" style="background:var(--esc)">escalated</span>
+    </div>
+  </div>
+</body></html>
