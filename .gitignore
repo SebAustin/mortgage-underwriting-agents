@@ -41,3 +41,6 @@ coverage.xml
 video/audio/
 video/clips/
 video/frames/_probe_*.png
+
+# Generated judge-submission bundle (regenerate with: git archive --format=zip -o devpost/caseweaver-submission.zip HEAD)
+devpost/*.zip
